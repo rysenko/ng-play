@@ -1,0 +1,9 @@
+<input name="{{ column.field }}" data-ng-hide="column.options" data-ng-model="model"
+    placeholder="{{column.caption}}" data-ng-required="column.required"
+    data-ng-pattern="column.pattern" type="{{ column.type }}" data-ng-class="{ 'form-control': large }">
+<select data-ng-show="column.options" data-ng-options="k as v for (k, v) in column.options"
+    data-ng-class="{ 'form-control': large }" data-ng-model="model"></select>
+<span data-ng-show="form[column.field].$error.required" class="text-danger">{{ column.caption }} is required</span>
+<span data-ng-show="form[column.field].$invalid && !form[column.field].$error.required" class="text-danger">{{ column.caption }} is invalid</span>
+
+                            

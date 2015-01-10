@@ -2,24 +2,37 @@ module.exports = ['$scope', 'UserService', function ($scope, UserService) {
     $scope.columns = [
         {
             field: 'FirstName',
-            caption: 'First Name'
+            caption: 'First Name',
+            pattern: '^[\\w-]+$',
+            required: true
         },
         {
             field: 'LastName',
-            caption: 'Last Name'
+            caption: 'Last Name',
+            pattern: '^[\\w-]+$',
+            required: true
         },
         {
             field: 'Email',
-            caption: 'Email'
+            caption: 'Email',
+            type: 'email',
+            required: true
         },
         {
             field: 'Age',
-            caption: 'Age'
+            caption: 'Age',
+            type: 'number',
+            required: true
         },
         {
             field: 'Gender',
-            caption: 'Gender'
+            caption: 'Gender',
+            required: true,
+            options: {
+                Male: 'Male',
+                Female: 'Female'
+            }
         }
     ];
-    $scope.source = UserService.list;
+    $scope.service = UserService;
 }];

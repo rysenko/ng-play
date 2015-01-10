@@ -1,22 +1,12 @@
 var express = require('express');
-var app = express();
+var bodyParser = require('body-parser');
 var browserify = require('browserify');
-var userStore = require('./lib/userStore');
+var userRouter = require('./lib/userRouter');
 
+var app = express();
+app.use(bodyParser.json());
 app.use(express.static(__dirname + '/public'));
-
-app.get('/data', function (req, res, next) {
-    var limit = req.param('limit') || 20;
-    var skip = req.param('skip') || 0;
-    var order = req.param('order');
-    var term = req.param('term');
-    userStore.list(term, limit, skip, order, function (err, result) {
-        if (err) {
-            return next(err);
-        }
-        res.json(result);
-    });
-});
+app.use('/users', userRouter);
 
 app.get('/main.js', function (req, res) {
     res.set('Content-Type', 'text/javascript');

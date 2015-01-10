@@ -2,7 +2,10 @@
     <caption>
         <form class="form-horizontal">
             <div class="form-group">
-                <label for="search" class="control-label col-sm-1">Search</label>
+                <label for="search" class="control-label col-sm-1">
+                    <span data-ng-show="loading" class="glyphicon glyphicon-refresh glyphicon-refresh-animate"></span>
+                    &nbsp;Search
+                </label>
                 <div class="col-sm-3">
                     <input id="search" type="text" class="form-control" class="form-control" data-ng-model="term"
                            ng-model-options="{ updateOn: 'default blur', debounce: {'default': 300, 'blur': 0} }">
@@ -13,9 +16,9 @@
                             ng-model="pageSize"></select>
                 </div>
                 <label data-ng-show="pageSize != 'All'" class="control-label col-sm-1">Page</label>
-                <div class="col-sm-5">
+                <div data-ng-show="pageSize != 'All'" class="col-sm-5">
                     <ul class="pagination">
-                        <li data-ng-repeat="page in pages" data-ng-class="{active: currentPage == page}">
+                        <li data-ng-repeat="page in pages" data-ng-class="{active: currentPage() == page}">
                             <a data-ng-click="setPage(page)" data-ng-bind="page"></a>
                         </li>
                     </ul>
@@ -25,15 +28,50 @@
     </caption>
     <thead>
     <tr>
-        <th data-ng-repeat="column in columns">
-            <a data-ng-click="setSorter(column)" data-ng-bind="column.caption"></a>
+        <th data-ng-repeat="column in columns" data-ng-click="setSorter(column)">
+            <a data-ng-bind="column.caption"></a>
             <span data-ng-show="order == column.field" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+            <span data-ng-show="order == '-' + column.field" class="glyphicon glyphicon-chevron-down" aria-hidden="true"></span>
         </th>
+        <th>Actions</th>
     </tr>
     </thead>
-    <tbody>
+    <tbody data-ng-form="editorForm">
     <tr data-ng-repeat="item in items">
-        <td data-ng-repeat="column in columns">{{ item[column.field] }}</td>
+        <td data-ng-repeat="column in columns" data-ng-dblclick="editCell(item, column)">
+            <span data-ng-bind="item[column.field]" data-ng-hide="isEditCell(item, column)"></span>
+            <span data-edit-control data-model="editingItem[column.field]" data-form="editorForm"
+                data-column="column" data-ng-show="isEditCell(item, column)"></span>
+            <span data-ng-show="isEditCell(item, column)" data-ng-click="updateCell(item, column)"
+                class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+        </td>
+        <td>
+            <span data-ng-click="editItem(item)" class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+            <span data-ng-click="deleteItem(item)" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+        </td>
     </tr>
     </tbody>
 </table>
+<div class="modal fade" data-modal-show="showEditing">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title">Edit</h4>
+            </div>
+            <div class="modal-body">
+                <form name="modalForm" class="form-horizontal">
+                    <div data-ng-repeat="column in columns" class="form-group" data-ng-class="{ 'has-error': modalForm[column.field].$invalid }">
+                        <label class="col-sm-3 control-label" data-ng-bind="column.caption"></label>
+                        <div class="col-sm-9" data-edit-control data-column="column" data-model="editingItem[column.field]"
+                            data-form="modalForm" data-large="true"></div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button type="button" data-ng-click="updateItem()" class="btn btn-primary">Save</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,16 @@
+{
+  "name": "ng-play",
+  "version": "1.0.0",
+  "repository": {
+    "type": "git",
+    "url": "http://github.com/rysenko/ng-play.git"
+  },
+  "description": "Angular.js Playground",
+  "dependencies": {
+    "browserify": "^8.0.3",
+    "express": "^4.10.7"
+  },
+  "scripts": {
+    "start": "node ."
+  }
+}

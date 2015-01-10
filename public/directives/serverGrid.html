@@ -1,0 +1,39 @@
+<table class="table">
+    <caption>
+        <form class="form-horizontal">
+            <div class="form-group">
+                <label for="search" class="control-label col-sm-1">Search</label>
+                <div class="col-sm-3">
+                    <input id="search" type="text" class="form-control" class="form-control" data-ng-model="term"
+                           ng-model-options="{ updateOn: 'default blur', debounce: {'default': 300, 'blur': 0} }">
+                </div>
+                <label for="pageSize" class="control-label col-sm-1">Page Size</label>
+                <div class="col-sm-1">
+                    <select id="pageSize" class="form-control" ng-options="size as size for size in pageSizes"
+                            ng-model="pageSize"></select>
+                </div>
+                <label data-ng-show="pageSize != 'All'" class="control-label col-sm-1">Page</label>
+                <div class="col-sm-5">
+                    <ul class="pagination">
+                        <li data-ng-repeat="page in pages" data-ng-class="{active: currentPage == page}">
+                            <a data-ng-click="setPage(page)" data-ng-bind="page"></a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </form>
+    </caption>
+    <thead>
+    <tr>
+        <th data-ng-repeat="column in columns">
+            <a data-ng-click="setSorter(column)" data-ng-bind="column.caption"></a>
+            <span data-ng-show="order == column.field" class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+        </th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr data-ng-repeat="item in items">
+        <td data-ng-repeat="column in columns">{{ item[column.field] }}</td>
+    </tr>
+    </tbody>
+</table>

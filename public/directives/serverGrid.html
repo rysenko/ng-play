@@ -1,4 +1,4 @@
-<table class="table">
+<table class="table" data-infinite-scroll="scroll()">
     <caption>
         <form class="form-horizontal">
             <div class="form-group">
@@ -43,11 +43,11 @@
             <span data-edit-control data-model="editingItem[column.field]" data-form="editorForm"
                 data-column="column" data-ng-show="isEditCell(item, column)"></span>
             <span data-ng-show="isEditCell(item, column)" data-ng-click="updateCell(item, column)"
-                class="glyphicon glyphicon-ok" aria-hidden="true"></span>
+                class="glyphicon glyphicon-ok" title="Save" aria-hidden="true"></span>
         </td>
         <td>
-            <span data-ng-click="editItem(item)" class="glyphicon glyphicon-edit" aria-hidden="true"></span>
-            <span data-ng-click="deleteItem(item)" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
+            <span data-ng-click="editItem(item)" title="Edit" class="glyphicon glyphicon-edit" aria-hidden="true"></span>
+            <span data-ng-click="deleteItem(item)" title="Delete" class="glyphicon glyphicon-remove" aria-hidden="true"></span>
         </td>
     </tr>
     </tbody>

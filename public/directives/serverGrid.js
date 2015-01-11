@@ -5,21 +5,22 @@ module.exports = function () {
             service: '='
         },
         templateUrl: 'directives/serverGrid.html',
-        controller: ['$scope', '$timeout', function ($scope, $timeout) {
+        controller: ['$scope', function ($scope) {
             $scope.skip = 0;
             $scope.pageSizes = [10, 20, 50, 'All'];
             $scope.pageSize = 20;
             $scope.order = '';
             $scope.items = [];
-            $scope.loading = true;
-            var loadingTimeout;
 
-            $scope.refresh = function () {
-                loadingTimeout = $timeout(function () {
-                    $scope.loading = true;
-                }, 200);
-                $scope.service.list($scope.term, $scope.pageSize, $scope.skip, $scope.order).then(function (data) {
-                    $scope.items = data.data;
+            var isInfinite = function () {
+                return $scope.pageSize === 'All';
+            };
+
+            $scope.refresh = function (skipIncreased) {
+                $scope.loading = true;
+                var pageSize = isInfinite() ? 20 : $scope.pageSize;
+                $scope.service.list($scope.term, pageSize, $scope.skip, $scope.order).then(function (data) {
+                    $scope.items = isInfinite() && skipIncreased ? $scope.items.concat(data.data) : data.data;
                     $scope.count = data.count;
                     var numPages = Math.ceil($scope.count / $scope.pageSize);
                     $scope.pages = [];
@@ -27,7 +28,6 @@ module.exports = function () {
                         $scope.pages.push(i);
                     }
                 }).then(function () {
-                    $timeout.cancel(loadingTimeout);
                     $scope.loading = false;
                 });
             };
@@ -51,21 +51,32 @@ module.exports = function () {
                 $scope.skip = (page - 1) * $scope.pageSize;
             };
 
-            $scope.deleteItem = function (item) {
+            $scope.deleteItem = function (itemToDelete) {
                 if (confirm('Delete item?')) {
-                    $scope.service.delete(angular.fromJson(angular.toJson(item))).then($scope.refresh);
+                    $scope.service.delete(angular.fromJson(angular.toJson(itemToDelete))).then(function () {
+                        $scope.items = $scope.items.filter(function (item) {
+                            return item !== itemToDelete;
+                        });
+                    });
                 }
             };
 
             $scope.editItem = function (item) {
+                $scope.editingColumn = null;
+                $scope.originalItem = item;
                 $scope.editingItem = angular.copy(item);
                 $scope.showEditing = true;
             };
 
             $scope.updateItem = function () {
                 if ($scope.modalForm.$valid) {
-                    $scope.service.update(angular.fromJson(angular.toJson($scope.editingItem))).then($scope.refresh);
-                    $scope.showEditing = false;
+                    $scope.service.update(angular.fromJson(angular.toJson($scope.editingItem))).then(function () {
+                        $scope.items = $scope.items.map(function (item) {
+                            return $scope.originalItem === item ? $scope.editingItem : item;
+                        });
+                        $scope.showEditing = false;
+                    });
+
                 }
             };
 
@@ -88,9 +99,22 @@ module.exports = function () {
                 }
             };
 
-            $scope.$watch('term + pageSize + skip + order', function () {
+            $scope.scroll = function () {
+                if ($scope.pageSize === 'All') {
+                    $scope.skip = $scope.items.length;
+                }
+            };
+
+            $scope.$watch('term + pageSize + order', function () {
+                $scope.skip = 0;
                 $scope.refresh();
             });
+
+            $scope.$watch('skip', function (skip) {
+                if (skip > 0) {
+                    $scope.refresh(true);
+                }
+            })
         }]
     };
 };

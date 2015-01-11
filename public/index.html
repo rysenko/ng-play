@@ -5,12 +5,19 @@
     <title>Test Grid</title>
     <link rel="stylesheet" href="lib/bootstrap/dist/css/bootstrap.min.css"/>
     <link rel="stylesheet" href="index.css"/>
-    <script type="text/javascript" src="lib/angularjs/angular.min.js"></script>
     <script type="text/javascript" src="lib/jquery/dist/jquery.min.js"></script>
+    <script type="text/javascript" src="lib/angularjs/angular.min.js"></script>
+    <script type="text/javascript" src="lib/ng-infinite-scroll.min.js"></script>
     <script type="text/javascript" src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="main.js"></script>
 </head>
 <body data-ng-app="main" data-ng-controller="MainController">
+    <blockquote>
+        This demo shows server grid with sorting, paging, inline editing (double-click on cell) and infinite scrolling
+        (choose 'All' in page size). It also shows form builder based on columns configuration
+        (see <a href="https://github.com/rysenko/ng-play/blob/master/public/controllers/MainController.js">config</a>
+        and press <span class="glyphicon glyphicon-edit"></span> on any record to see resulting form).
+    </blockquote>
     <div class="panel panel-default">
         <div class="panel-body">
             <div data-server-grid data-service="service" data-columns="columns"></div>

@@ -16,7 +16,10 @@ module.exports = function () {
                 return $scope.pageSize === 'All';
             };
 
-            $scope.refresh = function (skipIncreased) {
+            var refresh = function (skipIncreased) {
+                if ($scope.loading) {
+                    return;
+                }
                 $scope.loading = true;
                 var pageSize = isInfinite() ? 20 : $scope.pageSize;
                 $scope.service.list($scope.term, pageSize, $scope.skip, $scope.order).then(function (data) {
@@ -107,13 +110,11 @@ module.exports = function () {
 
             $scope.$watch('term + pageSize + order', function () {
                 $scope.skip = 0;
-                $scope.refresh();
+                refresh();
             });
 
             $scope.$watch('skip', function (skip) {
-                if (skip > 0) {
-                    $scope.refresh(true);
-                }
+                refresh(true);
             })
         }]
     };

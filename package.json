@@ -12,6 +12,9 @@
     "browserify": "^8.0.3",
     "express": "^4.10.7"
   },
+  "engines": {
+    "node": "0.10.x"
+  },
   "scripts": {
     "start": "node .",
     "postinstall": "./node_modules/bower/bin/bower install"

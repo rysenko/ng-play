@@ -1,3 +1,8 @@
+require('./index.css');
+global.jQuery = global.$ = require('jquery');
+require('bootstrap/dist/js/bootstrap');
+var angular = require('angular');
+require('./vendor/ng-infinite-scroll');
 angular.module('main', ['infinite-scroll'])
     .controller('MainController', require('./controllers/MainController'))
     .service('UserService', require('./services/UserService'))

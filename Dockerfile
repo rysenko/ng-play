@@ -1,4 +1,4 @@
-FROM node:0.12.7
+FROM node:slim
 COPY . .
 RUN npm install
 EXPOSE  3000
